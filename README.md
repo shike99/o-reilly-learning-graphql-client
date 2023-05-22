@@ -4,7 +4,7 @@
 
 ## 手順
 `.env.local`を以下のようにして配置すること
-```.env.local
+```.env
 VITE_GITHUB_CLIENT_ID=
 ```
 
