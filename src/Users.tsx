@@ -3,7 +3,7 @@ import { AllUserQuery, ROOT_QUERY } from "./App"
 import AddFakeUsers from './AddFakeUsers'
 
 function Users() {
-  const {data,loading,error,refetch,startPolling, stopPolling} = useQuery<AllUserQuery>(ROOT_QUERY)
+  const {data,loading,error,refetch,startPolling, stopPolling} = useQuery<AllUserQuery>(ROOT_QUERY, { fetchPolicy: 'cache-and-network' })
 
   if (loading) return <p>loading users...</p>
   if (error) return <p>Error : {error.message}</p>

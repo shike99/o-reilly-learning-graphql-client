@@ -1,24 +1,25 @@
 import { useQuery } from "@apollo/client"
-import { AllUserQuery, ROOT_QUERY } from "./App"
+import { AllUserQuery, ROOT_QUERY, UserQuery } from "./App"
 
-function Me() {
+function Me({requestCode, logout, signingIn}: { requestCode: () => void, logout: () => void, signingIn: boolean }) {
   const { data, loading, error } = useQuery<AllUserQuery>(ROOT_QUERY)
 
   if (loading) return <p>loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  const logout = () => {
-    window.localStorage.removeItem('token')
-  }
-
   return <div>
-    {data && (
-      <div>
-        <img src={data.me.avatar} width={48} height={48} alt="" />
-        <h1>{ data.me.name }</h1>
-        <button onClick={logout}>logout</button>
-      </div>
-    )}
+    {data && data.me ?
+      <CurrentUser {...data.me} logout={logout} /> :
+      <button onClick={requestCode} disabled={signingIn}>Sign In with GitHub</button>
+    }
+  </div>
+}
+
+function CurrentUser({ name, avatar, logout}: UserQuery & {logout: () => void}) {
+  return <div>
+    <img src={avatar} width={48} height={48} alt="" />
+    <h1>{ name }</h1>
+    <button onClick={logout}>logout</button>
   </div>
 }
 
