@@ -1,5 +1,4 @@
 import { gql, useMutation } from '@apollo/client'
-import { AllUserQuery, ROOT_QUERY } from './App'
 
 interface UserQuery {
   githubLogin: string
@@ -23,21 +22,20 @@ const ADD_FAKE_USERS_MUTATION = gql`
 
 function AddFakeUsers() {
   const [addFakeUsers, { loading, error }] = useMutation<AddFakeUsers>(ADD_FAKE_USERS_MUTATION, {
-    update: (caches, { data }) => {
-      if (!data) return
-
-      const cachedUsersData = caches.readQuery<AllUserQuery>({ query: ROOT_QUERY })
-      if (!cachedUsersData) return
-
-      caches.writeQuery({
-        query: ROOT_QUERY,
-        data: {
-          ...cachedUsersData,
-          totalUsers: cachedUsersData.totalUsers + data.addFakeUsers.length,
-          allUsers: [...cachedUsersData.allUsers, ...data.addFakeUsers],
-        },
-      })
-    },
+    // 7章にてsubscriptionを追加し不要になった
+    // update: (caches, { data }) => {
+    //   if (!data) return
+    //   const cachedUsersData = caches.readQuery<AllUserQuery>({ query: ROOT_QUERY })
+    //   if (!cachedUsersData) return
+    //   caches.writeQuery({
+    //     query: ROOT_QUERY,
+    //     data: {
+    //       ...cachedUsersData,
+    //       totalUsers: cachedUsersData.totalUsers + data.addFakeUsers.length,
+    //       allUsers: [...cachedUsersData.allUsers, ...data.addFakeUsers],
+    //     },
+    //   })
+    // },
   })
 
   if (loading) return <p>adding fake users...</p>

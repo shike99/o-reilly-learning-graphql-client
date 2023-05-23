@@ -1,9 +1,19 @@
-import { gql } from '@apollo/client'
+import { gql, useApolloClient } from '@apollo/client'
+import { useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import './App.css'
 import AuthorizedUser from './AuthorizedUser'
 import Users from './Users'
 
+const LISTEN_FOR_USERS = gql`
+  subscription {
+    newUser {
+      githubLogin
+      name
+      avatar
+    }
+  }
+`
 export const ROOT_QUERY = gql`
   query allUsers {
     totalUsers
@@ -35,6 +45,28 @@ export interface AllUserQuery {
 }
 
 function App() {
+  const client = useApolloClient()
+
+  useEffect(() => {
+    const listenForUsers = client.subscribe({ query: LISTEN_FOR_USERS }).subscribe(({ data }) => {
+      if (!data) return
+
+      const cachedData = client.readQuery<AllUserQuery>({ query: ROOT_QUERY })
+      if (!cachedData) return
+
+      client.writeQuery<AllUserQuery>({
+        query: ROOT_QUERY,
+        data: {
+          ...cachedData,
+          totalUsers: cachedData.totalUsers + 1,
+          allUsers: [...cachedData.allUsers, data.newUser],
+        },
+      })
+    })
+
+    return () => listenForUsers.unsubscribe()
+  }, [])
+
   return (
     <BrowserRouter>
       <AuthorizedUser />
