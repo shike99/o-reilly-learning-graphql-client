@@ -1,8 +1,8 @@
-import { gql, useApolloClient, useMutation } from "@apollo/client"
-import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
-import { AllUserQuery, ROOT_QUERY } from "./App"
-import Me from "./Me"
+import { gql, useApolloClient, useMutation } from '@apollo/client'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { AllUserQuery, ROOT_QUERY } from './App'
+import Me from './Me'
 
 const GITHUB_AUTH_MUTATION = gql`
   mutation githubAuth($code: String!) {
@@ -24,7 +24,7 @@ function AuthorizedUser() {
   const location = useLocation()
   const client = useApolloClient()
   const [authorize, { loading, error }] = useMutation<GithubAuthMutation>(GITHUB_AUTH_MUTATION, {
-    update: (caches, {data}) => {
+    update: (caches, { data }) => {
       window.localStorage.setItem('token', data?.githubAuth.token || '')
       navigate('/')
       setSigningIn(false)
@@ -35,7 +35,7 @@ function AuthorizedUser() {
   useEffect(() => {
     if (location.search.match(/code=/)) {
       setSigningIn(true)
-      const code = location.search.replace("?code=", "")
+      const code = location.search.replace('?code=', '')
       authorize({ variables: { code } })
     }
   }, [location])
@@ -54,9 +54,11 @@ function AuthorizedUser() {
   if (loading) return <p>Authorizing User...</p>
   if (error) return <p>Authorize Failed</p>
 
-  return <div>
-    <Me requestCode={requestCode} signingIn={signingIn} logout={logout} />
-  </div>
+  return (
+    <div>
+      <Me requestCode={requestCode} signingIn={signingIn} logout={logout} />
+    </div>
+  )
 }
 
 export default AuthorizedUser

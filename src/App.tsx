@@ -7,8 +7,12 @@ import Users from './Users'
 export const ROOT_QUERY = gql`
   query allUsers {
     totalUsers
-    allUsers { ...userInfo }
-    me { ...userInfo }
+    allUsers {
+      ...userInfo
+    }
+    me {
+      ...userInfo
+    }
   }
 
   fragment userInfo on User {
