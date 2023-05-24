@@ -24,7 +24,7 @@ function AuthorizedUser() {
   const location = useLocation()
   const client = useApolloClient()
   const [authorize, { loading, error }] = useMutation<GithubAuthMutation>(GITHUB_AUTH_MUTATION, {
-    update: (caches, { data }) => {
+    update: (_, { data }) => {
       window.localStorage.setItem('token', data?.githubAuth.token || '')
       navigate('/')
       setSigningIn(false)

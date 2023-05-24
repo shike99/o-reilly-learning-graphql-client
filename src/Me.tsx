@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { NavLink } from 'react-router-dom'
 import { AllUserQuery, ROOT_QUERY, UserQuery } from './App'
 
 function Me({ requestCode, logout, signingIn }: { requestCode: () => void; logout: () => void; signingIn: boolean }) {
@@ -26,6 +27,7 @@ function CurrentUser({ name, avatar, logout }: UserQuery & { logout: () => void 
       <img src={avatar} width={48} height={48} alt="" />
       <h1>{name}</h1>
       <button onClick={logout}>logout</button>
+      <NavLink to="/newPhoto">Post Photo</NavLink>
     </div>
   )
 }

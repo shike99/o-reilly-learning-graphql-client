@@ -1,6 +1,7 @@
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache, split } from '@apollo/client'
+import { ApolloClient, ApolloLink, ApolloProvider, InMemoryCache, split } from '@apollo/client'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { createUploadLink } from 'apollo-upload-client'
 import { persistCache } from 'apollo3-cache-persist'
 import { createClient } from 'graphql-ws'
 import ReactDOM from 'react-dom/client'
@@ -18,7 +19,10 @@ if (localStorage.getItem('apollo-cache-persist')) {
   cache.restore(cacheData)
 }
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' })
+const httpLink = createUploadLink({
+  uri: 'http://localhost:4000/graphql',
+  headers: { 'Apollo-Require-Preflight': 'true' },
+})
 const wsLink = new GraphQLWsLink(createClient({ url: 'ws://localhost:4000/graphql' }))
 const authLink = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers }: { headers: Record<string, string> }) => ({

@@ -1,8 +1,10 @@
 import { gql, useApolloClient } from '@apollo/client'
-import { useEffect } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import AuthorizedUser from './AuthorizedUser'
+import Photos from './Photos'
+import PostPhoto from './PostPhoto'
 import Users from './Users'
 
 const LISTEN_FOR_USERS = gql`
@@ -17,11 +19,17 @@ const LISTEN_FOR_USERS = gql`
 export const ROOT_QUERY = gql`
   query allUsers {
     totalUsers
+    totalPhotos
     allUsers {
       ...userInfo
     }
     me {
       ...userInfo
+    }
+    allPhotos {
+      id
+      name
+      url
     }
   }
 
@@ -38,10 +46,18 @@ export interface UserQuery {
   avatar: string
 }
 
+export interface PhotoQuery {
+  id: string
+  name: string
+  url: string
+}
+
 export interface AllUserQuery {
   totalUsers: number
+  totalPhotos: number
   allUsers: UserQuery[]
   me: UserQuery
+  allPhotos: PhotoQuery[]
 }
 
 function App() {
@@ -68,10 +84,24 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
-      <AuthorizedUser />
-      <Users />
-    </BrowserRouter>
+    <React.StrictMode>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <AuthorizedUser />
+                <Users />
+                <Photos />
+              </>
+            }
+          />
+          <Route path="/newPhoto" Component={PostPhoto} />
+          <Route element={<h1>Page not found</h1>} />
+        </Routes>
+      </BrowserRouter>
+    </React.StrictMode>
   )
 }
 
